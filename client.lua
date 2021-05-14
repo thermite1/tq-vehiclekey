@@ -86,7 +86,7 @@ AddEventHandler("tq-vehiclekey:client:arabayikilitlememlazim", function(plaka)
 end)
 
 
-local konum = vector3(398.609, 316.165, 103.020) -- burdan istediğiniz yere taşıyabilirsiniz.
+local konum = vector3(398.609, 316.165, 103.020) -- buradan istediğiniz yere taşıyabilirsiniz.
 Citizen.CreateThread(function()
 	while true do
 		sleepthread = 2000

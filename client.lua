@@ -84,3 +84,74 @@ AddEventHandler("tq-vehiclekey:client:arabayikilitlememlazim", function(plaka)
 			end
 		end
 end)
+
+
+local konum = vector3(398.609, 316.165, 103.020) -- burdan istediğiniz yere taşıyabilirsiniz.
+Citizen.CreateThread(function()
+	while true do
+		sleepthread = 2000
+				local pPed = PlayerPedId()
+				local pCoords = GetEntityCoords(pPed)
+				local distance = #(pCoords - konum)
+
+				if distance <= 5.0 then
+					sleepthread = 1
+					DrawMarker(2, konum.x, konum.y, konum.z, 0, 0, 0, 0, 0, 0, 0.3, 0.3, 0.2, 0, 157, 0, 155, 0, 0, 2, 1, 0, 0, 0)
+					if distance <= 1.5 then
+						DrawText3D(konum.x, konum.y, konum.z + 0.3, '[E] - Anahtar Çıkart')
+						if IsControlJustPressed(1, 38) then
+							ESX.TriggerServerCallback("tq-vehiclekey:server:getPlayerVehicles", function(vehicles) --/ m3_garage *-*
+								local menuElements = {}
+								for k, v in ipairs(vehicles) do
+									local vehicleProps = v.props
+									if GetLabelText(GetDisplayNameFromVehicleModel(vehicleProps.model)) == "NULL" then
+										table.insert(menuElements, {
+											label = "Model: Bilinmiyor - Plaka: " .. v.plate, 
+											vehicle = v
+										})
+									else
+										table.insert(menuElements, {
+											label = "Model: " .. GetLabelText(GetDisplayNameFromVehicleModel(vehicleProps.model)) .. " - Plaka: " .. v.plate,
+											vehicle = v
+										})
+									end
+								end
+
+								ESX.UI.Menu.Open("default", GetCurrentResourceName(), "main_garage_menu", {
+									title = "Anahtarcı James Hunt",
+									elements = menuElements,
+									align = "right"
+								}, function(data, menu)
+									local currentVehicle = data.current.vehicle
+
+									if currentVehicle then
+										TriggerServerEvent("tq-vehiclekey:server:needKey", currentVehicle.plate, GetLabelText(GetDisplayNameFromVehicleModel(currentVehicle.props.model)))
+										ESX.UI.Menu.CloseAll()
+									end
+
+								end, function(data, menu)
+									ESX.UI.Menu.CloseAll()
+								end)
+
+							end)
+						end
+					end
+				end
+		Citizen.Wait(sleepthread)
+	end
+end)
+
+function DrawText3D(x, y, z, text)
+	SetTextScale(0.30, 0.30)
+    SetTextFont(0)
+    SetTextProportional(1)
+    SetTextColour(255, 255, 255, 215)
+    SetTextEntry("STRING")
+    SetTextCentre(true)
+    AddTextComponentString(text)
+    SetDrawOrigin(x,y,z, 0)
+    DrawText(0.0, 0.0)
+    local factor = (string.len(text)) / 250
+    DrawRect(0.0, 0.0+0.0125, 0.017+ factor, 0.03, 0, 0, 0, 75)
+    ClearDrawOrigin()
+end

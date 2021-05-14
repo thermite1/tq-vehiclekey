@@ -37,3 +37,40 @@ xPlayer.addInventoryItem("vehiclekey", 1, false, info)
 ```
 
 ![image](https://user-images.githubusercontent.com/71380426/117555304-c0a31c80-b066-11eb-9d7b-9f170ac957c4.png)
+
+
+`Anahtar Kontrolü`
+```lua
+ESX.TriggerServerCallback("tq-vehiclekey:server:checkKey", function(result)
+	for i=1, #result, 1 do
+		if result[i].info.plaka == GetVehicleNumberPlateText(veh) then
+```
+
+`Örnek`
+```lua 
+RegisterNUICallback('toggleengine', function(data, cb)
+    player = PlayerPedId()
+    veh = GetVehiclePedIsIn(player, false)
+    if veh ~= 0 then
+        ESX.TriggerServerCallback("tq-vehiclekey:server:checkKey", function(result)
+            for i=1, #result, 1 do
+                if result[i].info.plaka == GetVehicleNumberPlateText(veh) then
+                    local engine = not GetIsVehicleEngineRunning(veh)
+                    if not IsPedInAnyHeli(player) then
+                        SetVehicleEngineOn(veh, engine, false, true)
+                        SetVehicleJetEngineOn(veh, engine)
+                    else
+                        if engine then
+                            SetVehicleFuelLevel(veh, vehicle_fuel)
+                        else
+                            SetVehicleFuelLevel(veh, 0)
+                        end
+                    end
+                end
+
+            end
+        end)
+    end
+    cb('ok')
+end)
+```

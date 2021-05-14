@@ -43,7 +43,7 @@ xPlayer.addInventoryItem("vehiclekey", 1, false, info)
 ```lua
 ESX.TriggerServerCallback("tq-vehiclekey:server:checkKey", function(result)
 	for i=1, #result, 1 do
-		if result[i].info.plaka == GetVehicleNumberPlateText(veh) then
+		if result[i].info.plaka == GetVehicleNumberPlateText(GetVehiclePedIsIn(PlayerPedId(), false)) then
 ```
 
 `Örnek`

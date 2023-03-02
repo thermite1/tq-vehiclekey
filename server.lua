@@ -25,14 +25,19 @@ ESX.RegisterServerCallback("tq-vehiclekey:server:getPlayerVehicles", function(so
 		cb(vehicles)
 	end)
 end)
-
 RegisterServerEvent("tq-vehiclekey:server:needKey")
-AddEventHandler("tq-vehiclekey:server:needKey", function(plate, vehicleModel)
-    local src = source
-    local xPlayer = ESX.GetPlayerFromId(src)
-    info = {
-        plaka = plate,
-        model = vehicleModel
-    }    
-    xPlayer.addInventoryItem("vehiclekey", 1, false, info)    
-end)
+AddEventHandler("tq-vehiclekey:server:needKey", function(plate, model)
+    local _source = source
+    local xPlayer = ESX.GetPlayerFromId(_source)
+    
+                if xPlayer.getInventoryItem('vehiclekey').count < 1 then
+                metadata = {
+	                plaka = plate,
+	                model = model
+                }
+                    xPlayer.addInventoryItem("vehiclekey", 2, metadata) 
+                    TriggerClientEvent('esx:showNotification', source, '2 Adet Anahtar Aldiniz')
+                    elseif xPlayer.getInventoryItem('vehiclekey').count > 1 then
+                    TriggerClientEvent('mythic_notify:client:SendAlert', source, { type = 'error', text = 'Uzerinde zaten bir anahtar var' })
+                end
+            end)
